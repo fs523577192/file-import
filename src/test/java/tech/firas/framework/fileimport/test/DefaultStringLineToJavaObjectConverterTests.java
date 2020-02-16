@@ -21,16 +21,16 @@ import java.util.Random;
 import org.junit.Assert;
 import org.junit.Test;
 
-import tech.firas.framework.fileimport.DefaultLineToJavaObjectConverter;
+import tech.firas.framework.fileimport.DefaultStringLineToJavaObjectConverter;
 
-public class DefaultLineToJavaObjectConverterTests {
+public class DefaultStringLineToJavaObjectConverterTests {
 
     private static final Random random = new Random();
 
     @Test
     public void test() throws NoSuchMethodException, ClassNotFoundException {
-        final DefaultLineToJavaObjectConverter<BeanForTest> converter =
-                new DefaultLineToJavaObjectConverter<>(BeanForTest.class.getName());
+        final DefaultStringLineToJavaObjectConverter<BeanForTest> converter =
+                new DefaultStringLineToJavaObjectConverter<>(BeanForTest.class.getName());
         converter.setFieldNames(Arrays.asList("aaAa", "bbBb", "ccCc", "ddDd", "eeEe", "ffFf", "ggGg", "hhHh"));
 
         for (int i = 65536; i > 0; i -= 1) {

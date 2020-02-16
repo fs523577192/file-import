@@ -22,7 +22,7 @@ import java.util.Iterator;
 import org.junit.Assert;
 import org.junit.Test;
 
-import tech.firas.framework.fileimport.DefaultLineToJavaObjectConverter;
+import tech.firas.framework.fileimport.DefaultStringLineToJavaObjectConverter;
 import tech.firas.framework.fileimport.DefaultPlainTextDataFileReader;
 import tech.firas.framework.fileimport.FixedNumberHeaderLineJudge;
 
@@ -33,8 +33,8 @@ public class DefaultPlainTextDataFileReaderTests {
         final FixedNumberHeaderLineJudge<String> judge = new FixedNumberHeaderLineJudge<>();
         judge.setNumberOfHeaderLines(1);
 
-        final DefaultLineToJavaObjectConverter<BeanForTest> converter =
-                new DefaultLineToJavaObjectConverter<>(BeanForTest.class.getName());
+        final DefaultStringLineToJavaObjectConverter<BeanForTest> converter =
+                new DefaultStringLineToJavaObjectConverter<>(BeanForTest.class.getName());
         converter.setFieldNames(Arrays.asList("aaAa", "bbBb", "ccCc", "ddDd", "eeEe", "ffFf", "ggGg", "hhHh"));
 
         final DefaultPlainTextDataFileReader<BeanForTest> dataFileReader = new DefaultPlainTextDataFileReader<>();

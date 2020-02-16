@@ -7,9 +7,9 @@ package tech.firas.framework.fileimport;
 public interface PlainTextDataFileReader<T> extends DataFileReader<T, String> {
 
     /**
-     * Tell the reader to read the data file with the specific character set
+     * <p>Tell the reader to read the data file with the specific character set</p>
      *
-     * If `charset` is null, then read with the operating system's default character set
+     * <p>If `charset` is null, then read with the operating system's default character set</p>
      *
      * @param charset  the name of the character set used to read the text data file
      */
