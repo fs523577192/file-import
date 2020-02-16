@@ -1,18 +1,3 @@
-/*
- * Copyright 2020-2020 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package tech.firas.framework.fileimport.test;
 
 import java.util.Arrays;
@@ -21,27 +6,34 @@ import java.util.Random;
 import org.junit.Assert;
 import org.junit.Test;
 
-import tech.firas.framework.fileimport.DefaultStringLineToJavaObjectConverter;
+import tech.firas.framework.fileimport.CsvLineToJavaObjectConverter;
 
-public class DefaultStringLineToJavaObjectConverterTests {
+public class CsvLineToJavaObjectConverterTests {
 
     private static final Random random = new Random();
 
+    private static String escape(final String column) {
+        if (column.contains(",") || column.startsWith("\"")) {
+            return '"' + column.replace("\"", "\"\"") + '"';
+        }
+        return column;
+    }
+
     @Test
     public void test() throws NoSuchMethodException, ClassNotFoundException {
-        final DefaultStringLineToJavaObjectConverter<BeanForTest> converter =
-                new DefaultStringLineToJavaObjectConverter<>(BeanForTest.class.getName());
+        final CsvLineToJavaObjectConverter<BeanForTest> converter =
+                new CsvLineToJavaObjectConverter<>(BeanForTest.class.getName());
         converter.setFieldNames(Arrays.asList("aaAa", "bbBb", "ccCc", "ddDd", "eeEe", "ffFf", "ggGg", "hhHh"));
 
         for (int i = 65536; i > 0; i -= 1) {
             final BeanForTest a1 = getAForTest();
-            final String line = a1.isAaAa() + "," + getRandomColumnValue() + "," +
+            final String line = a1.isAaAa() + "," + escape(getRandomColumnValue()) + "," +
                     a1.getCcCc() + "," + a1.getDdDd() + "," + a1.getEeEe() + "," + a1.getFfFf() + "," +
-                    a1.getGgGg() + "," + a1.getHhHh() + "," + getRandomColumnValue();
+                    a1.getGgGg() + "," + escape(a1.getHhHh()) + "," + escape(getRandomColumnValue());
             final BeanForTest a2 = converter.convert(line);
             Assert.assertEquals(a1, a2);
 
-            final BeanForTest a3 = converter.convert(a1.isAaAa() + "," + getRandomColumnValue() + "," +
+            final BeanForTest a3 = converter.convert(a1.isAaAa() + "," + escape(getRandomColumnValue()) + "," +
                     a1.getCcCc() + "," + a1.getDdDd() + "," + a1.getEeEe() + "," + a1.getFfFf());
             Assert.assertNotNull(a3);
             Assert.assertNull(a3.getGgGg());
@@ -67,9 +59,10 @@ public class DefaultStringLineToJavaObjectConverterTests {
     private String getRandomColumnValue() {
         final StringBuilder builder = new StringBuilder();
         for (int i = random.nextInt(10 + 1); i > 0; i -= 1) {
-            int c = random.nextInt(127 - 1 - (int) ' ') + (int) ' ';
-            builder.append(c >= (int) ',' ? (char) (c + 1) : (char) c);
+            int c = random.nextInt(127 - (int) ' ') + (int) ' ';
+            builder.append((char) c);
         }
         return builder.toString();
     }
+
 }
