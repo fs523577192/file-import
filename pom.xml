@@ -6,7 +6,7 @@
 
     <groupId>tech.firas.framework</groupId>
     <artifactId>file-import</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.2.0</version>
 
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
