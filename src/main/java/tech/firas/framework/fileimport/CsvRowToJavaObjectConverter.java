@@ -12,7 +12,7 @@ import tech.firas.framework.bean.ObjectType;
  *     <li>The columns in a row in a CSV file is seperated by commas.</li>
  *     <li>If the column value contains one or more commas, the column is quoted by double quotes (").</li>
  *     <li>If the column is quoted by double quotes and the column value contains one or more double quotes,
- *         the double quotes are escaped to double double quotes (" => "").</li>
+ *         the double quotes are escaped to double double quotes (" =&gt; "").</li>
  * </ul>
  * <p><b>Notice: </b>to avoid complicated logic, if a column begins with a double quote, this converter
  *    consider the column as quoted. And if this converter find no ending double quote for a quoted column,
@@ -21,33 +21,33 @@ import tech.firas.framework.bean.ObjectType;
  * <p>You can specify the mapping from the index of the column to the field of the Java bean by setting
  *    {@code fieldNames}.</p>
  *
- * @param <T>  the type of the Java object that every data line is to be converted to
+ * @param <T>  the type of the Java object that every data row is to be converted to
  */
-public class CsvLineToJavaObjectConverter<T> extends ToJavaObjectConverterBase<T> {
+public class CsvRowToJavaObjectConverter<T> extends ToJavaObjectConverterBase<T> {
 
-    private static final Logger logger = Logger.getLogger(CsvLineToJavaObjectConverter.class.getName());
+    private static final Logger logger = Logger.getLogger(CsvRowToJavaObjectConverter.class.getName());
 
 
     @SuppressWarnings("unchecked")
-    public CsvLineToJavaObjectConverter(final String className)
+    public CsvRowToJavaObjectConverter(final String className)
             throws ClassNotFoundException, NoSuchMethodException {
         this((Class<T>) Class.forName(className));
     }
 
-    private CsvLineToJavaObjectConverter(final Class<T> clazz) throws NoSuchMethodException {
+    private CsvRowToJavaObjectConverter(final Class<T> clazz) throws NoSuchMethodException {
         super(clazz.getConstructor());
     }
 
-    public static <T> CsvLineToJavaObjectConverter<T> ofClass(final Class<T> clazz) throws NoSuchMethodException {
+    public static <T> CsvRowToJavaObjectConverter<T> ofClass(final Class<T> clazz) throws NoSuchMethodException {
         if (clazz == null) {
             throw new IllegalArgumentException("clazz must not be null");
         }
-        return new CsvLineToJavaObjectConverter<>(clazz);
+        return new CsvRowToJavaObjectConverter<>(clazz);
     }
 
     @Override
     public T convert(final String source) {
-        final int lineLength = source.length();
+        final int rowLength = source.length();
         try {
             final T result = this.constructor.newInstance();
 
@@ -55,7 +55,7 @@ public class CsvLineToJavaObjectConverter<T> extends ToJavaObjectConverterBase<T
 
             State state = State.FIELD_START;
             int i = 0; // index of characters in source
-            while (i < lineLength) {
+            while (i < rowLength) {
                 switch (state) {
                     case FIELD_START:
                         if (source.charAt(i) == '"') {
@@ -70,7 +70,7 @@ public class CsvLineToJavaObjectConverter<T> extends ToJavaObjectConverterBase<T
                                 return result;
                             }
 
-                            if (nextComma < 0) { // no comma anymore, line end
+                            if (nextComma < 0) { // no comma anymore, row end
                                 setField(result, columnIndex, source.substring(i));
                                 return result;
                             } else {

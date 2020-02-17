@@ -6,9 +6,9 @@ import java.util.Random;
 import org.junit.Assert;
 import org.junit.Test;
 
-import tech.firas.framework.fileimport.CsvLineToJavaObjectConverter;
+import tech.firas.framework.fileimport.CsvRowToJavaObjectConverter;
 
-public class CsvLineToJavaObjectConverterTests {
+public class CsvRowToJavaObjectConverterTests {
 
     private static final Random random = new Random();
 
@@ -21,16 +21,16 @@ public class CsvLineToJavaObjectConverterTests {
 
     @Test
     public void test() throws NoSuchMethodException, ClassNotFoundException {
-        final CsvLineToJavaObjectConverter<BeanForTest> converter =
-                new CsvLineToJavaObjectConverter<>(BeanForTest.class.getName());
+        final CsvRowToJavaObjectConverter<BeanForTest> converter =
+                new CsvRowToJavaObjectConverter<>(BeanForTest.class.getName());
         converter.setFieldNames(Arrays.asList("aaAa", "bbBb", "ccCc", "ddDd", "eeEe", "ffFf", "ggGg", "hhHh"));
 
         for (int i = 65536; i > 0; i -= 1) {
             final BeanForTest a1 = getAForTest();
-            final String line = a1.isAaAa() + "," + escape(getRandomColumnValue()) + "," +
+            final String row = a1.isAaAa() + "," + escape(getRandomColumnValue()) + "," +
                     a1.getCcCc() + "," + a1.getDdDd() + "," + a1.getEeEe() + "," + a1.getFfFf() + "," +
                     a1.getGgGg() + "," + escape(a1.getHhHh()) + "," + escape(getRandomColumnValue());
-            final BeanForTest a2 = converter.convert(line);
+            final BeanForTest a2 = converter.convert(row);
             Assert.assertEquals(a1, a2);
 
             final BeanForTest a3 = converter.convert(a1.isAaAa() + "," + escape(getRandomColumnValue()) + "," +

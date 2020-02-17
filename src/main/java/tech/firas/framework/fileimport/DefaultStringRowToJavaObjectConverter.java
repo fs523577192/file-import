@@ -22,18 +22,18 @@ import java.util.regex.Pattern;
 import tech.firas.framework.bean.ObjectType;
 
 /**
- * <p>For converting the plain text data line simply seperated by a pattern (e.g. a comma, a vertical bar, ...).</p>
+ * <p>For converting the plain text data row simply seperated by a pattern (e.g. a comma, a vertical bar, ...).</p>
  *
  * <p>The default pattern is a comma.</p>
  *
  * <p>You can specify the mapping from the index of the column to the field of the Java bean by setting
  *    {@code fieldNames}.</p>
  *
- * @param <T>  the type of the Java object that every data line is to be converted to
+ * @param <T>  the type of the Java object that every data row is to be converted to
  */
-public class DefaultStringLineToJavaObjectConverter<T> extends ToJavaObjectConverterBase<T> {
+public class DefaultStringRowToJavaObjectConverter<T> extends ToJavaObjectConverterBase<T> {
 
-    private static final Logger logger = Logger.getLogger(DefaultStringLineToJavaObjectConverter.class.getName());
+    private static final Logger logger = Logger.getLogger(DefaultStringRowToJavaObjectConverter.class.getName());
 
     private static final Pattern defaultPattern = Pattern.compile(",");
 
@@ -44,21 +44,21 @@ public class DefaultStringLineToJavaObjectConverter<T> extends ToJavaObjectConve
 
 
     @SuppressWarnings("unchecked")
-    public DefaultStringLineToJavaObjectConverter(final String className)
+    public DefaultStringRowToJavaObjectConverter(final String className)
             throws ClassNotFoundException, NoSuchMethodException {
         this((Class<T>) Class.forName(className));
     }
 
-    private DefaultStringLineToJavaObjectConverter(final Class<T> clazz) throws NoSuchMethodException {
+    private DefaultStringRowToJavaObjectConverter(final Class<T> clazz) throws NoSuchMethodException {
         super(clazz.getConstructor());
     }
 
-    public static <T> DefaultStringLineToJavaObjectConverter<T> ofClass(final Class<T> clazz)
+    public static <T> DefaultStringRowToJavaObjectConverter<T> ofClass(final Class<T> clazz)
             throws NoSuchMethodException {
         if (clazz == null) {
             throw new IllegalArgumentException("clazz must not be null");
         }
-        return new DefaultStringLineToJavaObjectConverter<>(clazz);
+        return new DefaultStringRowToJavaObjectConverter<>(clazz);
     }
 
 

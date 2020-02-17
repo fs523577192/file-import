@@ -21,24 +21,24 @@ import java.util.Random;
 import org.junit.Assert;
 import org.junit.Test;
 
-import tech.firas.framework.fileimport.DefaultStringLineToJavaObjectConverter;
+import tech.firas.framework.fileimport.DefaultStringRowToJavaObjectConverter;
 
-public class DefaultStringLineToJavaObjectConverterTests {
+public class DefaultStringRowToJavaObjectConverterTests {
 
     private static final Random random = new Random();
 
     @Test
     public void test() throws NoSuchMethodException, ClassNotFoundException {
-        final DefaultStringLineToJavaObjectConverter<BeanForTest> converter =
-                new DefaultStringLineToJavaObjectConverter<>(BeanForTest.class.getName());
+        final DefaultStringRowToJavaObjectConverter<BeanForTest> converter =
+                new DefaultStringRowToJavaObjectConverter<>(BeanForTest.class.getName());
         converter.setFieldNames(Arrays.asList("aaAa", "bbBb", "ccCc", "ddDd", "eeEe", "ffFf", "ggGg", "hhHh"));
 
         for (int i = 65536; i > 0; i -= 1) {
             final BeanForTest a1 = getAForTest();
-            final String line = a1.isAaAa() + "," + getRandomColumnValue() + "," +
+            final String row = a1.isAaAa() + "," + getRandomColumnValue() + "," +
                     a1.getCcCc() + "," + a1.getDdDd() + "," + a1.getEeEe() + "," + a1.getFfFf() + "," +
                     a1.getGgGg() + "," + a1.getHhHh() + "," + getRandomColumnValue();
-            final BeanForTest a2 = converter.convert(line);
+            final BeanForTest a2 = converter.convert(row);
             Assert.assertEquals(a1, a2);
 
             final BeanForTest a3 = converter.convert(a1.isAaAa() + "," + getRandomColumnValue() + "," +

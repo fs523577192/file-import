@@ -1,6 +1,6 @@
 package tech.firas.framework.fileimport;
 
-public enum LineType {
+public enum RowType {
     HEADER,
     DATA,
     FOOTER,

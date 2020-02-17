@@ -1,10 +1,9 @@
 package tech.firas.framework.fileimport;
 
 /**
- * For reading the data in a plain text data file
- * @param <T>  the type of the Java object that every data line is to be converted to
+ * For reading every row in a plain text data file
  */
-public interface PlainTextDataFileReader<T> extends DataFileReader<T, String> {
+public interface PlainTextDataFileReader extends DataFileReader<String> {
 
     /**
      * <p>Tell the reader to read the data file with the specific character set</p>

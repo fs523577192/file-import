@@ -16,23 +16,23 @@
 package tech.firas.framework.fileimport;
 
 /**
- * For judging the type of the lines in a data file that has a fixed number of header lines
- * @param <T>  the type of a line (String for a plain text data file, or Row for an Excel file, ...)
+ * For judging the type of the rows in a data file that has a fixed number of header rows
+ * @param <T>  the type of a row (String for a plain text data file, or Row for an Excel file, ...)
  */
-public class FixedNumberHeaderLineJudge<T> implements DataLineJudge<T> {
+public class FixedNumberHeaderRowJudge<T> implements DataRowJudge<T> {
 
-    private int numberOfHeaderLines;
+    private int numberOfHeaderRows;
 
-    public int getNumberOfHeaderLines() {
-        return numberOfHeaderLines;
+    public int getNumberOfHeaderRows() {
+        return numberOfHeaderRows;
     }
 
-    public void setNumberOfHeaderLines(int numberOfHeaderLines) {
-        this.numberOfHeaderLines = numberOfHeaderLines;
+    public void setNumberOfHeaderRows(int numberOfHeaderRows) {
+        this.numberOfHeaderRows = numberOfHeaderRows;
     }
 
     @Override
-    public LineType test(final int lineNumber, final T line, final LineType previousLineType) {
-        return lineNumber <= numberOfHeaderLines ? LineType.HEADER : LineType.DATA;
+    public RowType test(final int rowNumber, final T row, final RowType previousRowType) {
+        return rowNumber <= numberOfHeaderRows ? RowType.HEADER : RowType.DATA;
     }
 }

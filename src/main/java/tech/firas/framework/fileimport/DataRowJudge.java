@@ -16,17 +16,17 @@
 package tech.firas.framework.fileimport;
 
 /**
- * For judging whether one line in the data file is a line of header, a line of data or a line of footer
- * @param <T>  the type of a line (String for a plain text data file, or Row for an Excel file, ...)
+ * For judging whether one row in the data file is a row of header, a row of data or a row of footer
+ * @param <T>  the type of a row (String for a plain text data file, or Row for an Excel file, ...)
  */
-public interface DataLineJudge<T> {
+public interface DataRowJudge<T> {
 
     /**
-     * Judges whether one line in the data file is a line of header, a line of data or a line of footer
-     * @param lineNumber  the line number of the first line of the data file is 1
-     * @param line  the line content corresponding to the line number
-     * @param previousLineType  the type of the previous line
-     * @return  the type of the input line
+     * Judges whether one row in the data file is a row of header, a row of data or a row of footer
+     * @param rowNumber  the row number of the first row of the data file is 1
+     * @param row  the row content corresponding to the row number
+     * @param previousRowType  the type of the previous row
+     * @return  the type of the input row
      */
-    LineType test(int lineNumber, T line, LineType previousLineType);
+    RowType test(int rowNumber, T row, RowType previousRowType);
 }

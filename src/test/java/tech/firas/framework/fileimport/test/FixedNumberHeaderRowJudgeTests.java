@@ -20,11 +20,11 @@ import java.util.Random;
 import org.junit.Assert;
 import org.junit.Test;
 
-import tech.firas.framework.fileimport.DataLineJudge;
-import tech.firas.framework.fileimport.FixedNumberHeaderLineJudge;
-import tech.firas.framework.fileimport.LineType;
+import tech.firas.framework.fileimport.DataRowJudge;
+import tech.firas.framework.fileimport.FixedNumberHeaderRowJudge;
+import tech.firas.framework.fileimport.RowType;
 
-public class FixedNumberHeaderLineJudgeTests {
+public class FixedNumberHeaderRowJudgeTests {
 
     private static final Random random = new Random();
 
@@ -32,18 +32,18 @@ public class FixedNumberHeaderLineJudgeTests {
     public void test() {
         for (int i = 0; i < 1000; i += 1) {
             final int n = random.nextInt(10);
-            final FixedNumberHeaderLineJudge<String> judge = new FixedNumberHeaderLineJudge<>();
-            judge.setNumberOfHeaderLines(n);
+            final FixedNumberHeaderRowJudge<String> judge = new FixedNumberHeaderRowJudge<>();
+            judge.setNumberOfHeaderRows(n);
             testAssertion(judge, n);
         }
     }
 
-    private void testAssertion(final DataLineJudge<String> judge, final int n) {
+    private void testAssertion(final DataRowJudge<String> judge, final int n) {
         for (int j = 1; j <= n; j += 1) {
-            Assert.assertEquals(LineType.HEADER, judge.test(j, "", j == 1 ? null : LineType.HEADER));
+            Assert.assertEquals(RowType.HEADER, judge.test(j, "", j == 1 ? null : RowType.HEADER));
         }
         for (int j = n + 1; j < 100; j += 1) {
-            Assert.assertEquals(LineType.DATA, judge.test(j, "", j == n + 1 ? LineType.HEADER : LineType.DATA));
+            Assert.assertEquals(RowType.DATA, judge.test(j, "", j == n + 1 ? RowType.HEADER : RowType.DATA));
         }
     }
 }

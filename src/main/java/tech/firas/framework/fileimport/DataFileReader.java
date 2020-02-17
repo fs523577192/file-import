@@ -18,32 +18,23 @@ package tech.firas.framework.fileimport;
 import java.io.IOException;
 import java.util.Iterator;
 
-import org.springframework.core.convert.converter.Converter;
-
 /**
- * For reading the data in a data file
- * @param <T>  the type of the Java object that every data line is to be converted to
- * @param <R>  the type of a line (String for a plain text data file, or Row for an Excel file, ...)
+ * For reading every row in a data file
+ * @param <R>  the type of a row (String for a plain text data file, or Row for an Excel file, ...)
  */
-public interface DataFileReader<T, R> {
+public interface DataFileReader<R> {
 
     /**
-     * Set the DataLineJudge for this reader
-     * @param dataLineJudge  the DataLineJudge for this reader
+     * Set the DataRowJudge for this reader
+     * @param dataRowJudge  the DataRowJudge for this reader
      */
-    void setDataLineJudge(DataLineJudge<R> dataLineJudge);
-
-    /**
-     * Set the converter used to convert the data row into a Java object
-     * @param converter  the converter used to convert the data row into a Java object
-     */
-    void setLineToJavaObjectConverter(Converter<R, T> converter);
+    void setDataRowJudge(DataRowJudge<R> dataRowJudge);
 
     /**
      * Read the data (ignoring headers and footers) from a data file
      * @param filePath  the path of the data file
-     * @return  an Iterator of every data item in the data file
-     * @throws IOException  if fails to read the data line
+     * @return  an Iterator of every row in the data file
+     * @throws IOException  if fails to read the rows in the data file
      */
-    Iterator<T> readDataFile(String filePath) throws IOException;
+    Iterator<DataRowContext<R>> readDataFile(String filePath) throws IOException;
 }
