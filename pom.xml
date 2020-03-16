@@ -6,7 +6,33 @@
 
     <groupId>tech.firas.framework</groupId>
     <artifactId>file-import</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
+    <packaging>jar</packaging>
+
+    <name>Firas Framework Data File Importer</name>
+    <description>Some utilities for importing data files</description>
+    <url>https://github.com/fs523577192/file-import</url>
+    <developers>
+        <developer>
+            <name>Yuping Wu</name>
+            <email>448445223@qq.com</email>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git://github.com/fs523577192/file-import</connection>
+        <developerConnection>scm:git:git://github.com/fs523577192/file-import</developerConnection>
+        <url>https://github.com/fs523577192/file-import</url>
+    </scm>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/fs523577192/file-import/issues</url>
+    </issueManagement>
 
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
@@ -22,15 +48,41 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
+            <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>4.6</version><!-- should be compatible with 4.0 -->
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.12.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jul</artifactId>
+            <version>2.12.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.197</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

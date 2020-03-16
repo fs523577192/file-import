@@ -17,11 +17,9 @@ package tech.firas.framework.fileimport;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -39,7 +37,7 @@ public abstract class DefaultDataFileImporterBase<R, T> implements Callable<Impo
 
     private static final Logger logger = Logger.getLogger(DefaultDataFileImporterBase.class.getName());
 
-    private DataFileReader<R> dataFileReader;
+    private AbstractDataFileReader<R> dataFileReader;
 
     /**
      * The converter used to convert the data row into a Java object
@@ -100,11 +98,11 @@ public abstract class DefaultDataFileImporterBase<R, T> implements Callable<Impo
         }
     }
 
-    public DataFileReader<R> getDataFileReader() {
+    public AbstractDataFileReader<R> getDataFileReader() {
         return dataFileReader;
     }
 
-    public void setDataFileReader(final DataFileReader<R> dataFileReader) {
+    public void setDataFileReader(final AbstractDataFileReader<R> dataFileReader) {
         this.dataFileReader = dataFileReader;
     }
 
@@ -139,66 +137,8 @@ public abstract class DefaultDataFileImporterBase<R, T> implements Callable<Impo
         logger.finer("Going to import " + filesToImport.size() + " files in " + this.baseDirectory);
     }
 
-    protected DataFileContext importOneFile(final String filePath) throws IOException {
-        this.beforeOneImport(filePath);
-
-        final DataFileContext dataFileContext = new DataFileContext();
-        this.processOneFile(filePath, dataFileContext, this.dataFileReader.readDataFile(filePath));
-
-        this.afterOneFileProcessed(filePath, dataFileContext);
-        return dataFileContext;
-    }
-
-    /**
-     * You can do something to prevent importing the smae file repeatedly,
-     * save the file information into DB, or output some logs here.
-     *
-     * @param filePath  the canonical file path of the file to be imported
-     */
-    protected void beforeOneImport(final String filePath) {
-        logger.finer("Going to import " + filePath);
-    }
-
-    protected void processOneFile(final String filePath, final DataFileContext dataFileContext,
-            final Iterator<DataRowContext<R>> rowIterator) {
-        logger.finer(filePath + " is opened for import");
-        while (rowIterator.hasNext()) {
-            final DataRowContext<R> dataRowContext = rowIterator.next();
-            switch (dataRowContext.getType()) {
-                case DATA:
-                    dataFileContext.setDataRowCount(dataFileContext.getDataRowCount() + 1);
-                    break;
-                case HEADER:
-                    dataFileContext.setHeaderRowCount(dataFileContext.getHeaderRowCount() + 1);
-                    break;
-                case FOOTER:
-                    dataFileContext.setFooterRowCount(dataFileContext.getFooterRowCount() + 1);
-                    break;
-            }
-            processOneRow(filePath, dataFileContext, dataRowContext);
-        }
-    }
-
-    /**
-     * You can save every data row read from the data file here.
-     * @param filePath  the canonical file path of the file to be imported
-     * @param dataFileContext  the information of the imported data file
-     * @param row  the row information
-     */
-    protected abstract void processOneRow(final String filePath, final DataFileContext dataFileContext,
-            DataRowContext<R> row);
-
-    /**
-     * You can archive / delete the imported file, commit the DB transaction,
-     * save the import status of the file, or output some logs here.
-     *
-     * @param filePath  the canonical file path of the file to be imported
-     * @param dataFileContext  the information of the imported data file
-     */
-    protected void afterOneFileProcessed(final String filePath, final DataFileContext dataFileContext) {
-        logger.finer("Imported " + dataFileContext.getDataRowCount() + " row(s) of data in " + filePath +
-                ", header row count: " + dataFileContext.getHeaderRowCount() +
-                ", footer row count: " + dataFileContext.getFooterRowCount());
+    protected DataFileContext importOneFile(final String filePath) throws Exception {
+        return this.dataFileReader.readDataFile(filePath, null);
     }
 
     protected void afterAllImport(final Map<String, DataFileContext> dataFileContextMap) {

@@ -3,7 +3,13 @@ package tech.firas.framework.fileimport;
 /**
  * For reading every row in a plain text data file
  */
-public interface PlainTextDataFileReader extends DataFileReader<String> {
+public abstract class PlainTextDataFileReader extends AbstractDataFileReader<String> {
+
+    protected String charset;
+
+    public String getCharset() {
+        return charset;
+    }
 
     /**
      * <p>Tell the reader to read the data file with the specific character set</p>
@@ -12,5 +18,7 @@ public interface PlainTextDataFileReader extends DataFileReader<String> {
      *
      * @param charset  the name of the character set used to read the text data file
      */
-    void setCharset(String charset);
+    public void setCharset(final String charset) {
+        this.charset = charset;
+    }
 }

@@ -4,16 +4,30 @@ import java.util.Objects;
 
 public class DataRowContext<R> {
 
+    private DataFileContext dataFileContext;
+
+    /**
+     * Count from 1
+     */
     private int rowNumber;
     private R row;
     private RowType type;
 
     public DataRowContext() {}
 
-    public DataRowContext(int rowNumber, R row, RowType type) {
+    public DataRowContext(final DataFileContext dataFileContext, final int rowNumber, final R row, final RowType type) {
+        setDataFileContext(dataFileContext);
         setRowNumber(rowNumber);
         setRow(row);
         setType(type);
+    }
+
+    public DataFileContext getDataFileContext() {
+        return dataFileContext;
+    }
+
+    public void setDataFileContext(final DataFileContext dataFileContext) {
+        this.dataFileContext = dataFileContext;
     }
 
     public int getRowNumber() {
@@ -50,7 +64,7 @@ public class DataRowContext<R> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }

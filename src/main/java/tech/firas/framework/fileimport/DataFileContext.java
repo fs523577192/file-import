@@ -2,10 +2,30 @@ package tech.firas.framework.fileimport;
 
 public class DataFileContext {
 
+    /**
+     * the canonical file path of the file to be imported
+     */
+    private String filePath;
+
     private int headerRowCount;
     private int dataRowCount;
     private int footerRowCount;
+
     private Object attachment;
+
+    public DataFileContext() {}
+
+    public DataFileContext(final String filePath) {
+        setFilePath(filePath);
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
 
     public int getHeaderRowCount() {
         return headerRowCount;
@@ -42,7 +62,8 @@ public class DataFileContext {
     @Override
     public String toString() {
         return "DataFileContext{" +
-                "headerRowCount=" + headerRowCount +
+                "filePath='" + filePath + '\'' +
+                ", headerRowCount=" + headerRowCount +
                 ", dataRowCount=" + dataRowCount +
                 ", footerRowCount=" + footerRowCount +
                 '}';

@@ -15,60 +15,42 @@
  */
 package tech.firas.framework.fileimport;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Iterator;
+import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
-public class DefaultPlainTextDataFileReader implements PlainTextDataFileReader {
+import tech.firas.framework.fileimport.processor.DataFileProcessor;
+import tech.firas.framework.fileimport.util.CloseableIterator;
 
-    private String charset;
+public class DefaultPlainTextDataFileReader extends PlainTextDataFileReader {
 
-    private DataRowJudge<String> dataRowJudge;
+    private static final Logger logger = Logger.getLogger(DefaultPlainTextDataFileReader.class.getName());
 
-    @Override
-    public void setCharset(final String charset) {
-        this.charset = charset;
-    }
-
-    @Override
-    public void setDataRowJudge(final DataRowJudge<String> dataRowJudge) {
-        this.dataRowJudge = dataRowJudge;
-    }
-
-    public String getCharset() {
-        return this.charset;
-    }
-
-    public DataRowJudge getDataRowJudge() {
-        return this.dataRowJudge;
-    }
+    private DataFileProcessor dataFileProcessor;
 
     @Override
-    public Iterator<DataRowContext<String>> readDataFile(final String filePath) throws IOException {
+    protected CloseableIterator<String> getRowIterator(
+            final String filePath, final Object parameters) throws IOException {
+        logger.finer("Going to open " + filePath);
         final Scanner scanner = (null == this.charset) ?
-                new Scanner(new FileInputStream(filePath)) :
-                new Scanner(new FileInputStream(filePath), this.charset);
-        return new MyIterator(scanner, this.dataRowJudge);
+                new Scanner(Paths.get(filePath)) :
+                new Scanner(Paths.get(filePath), this.charset);
+        return new MyIterator(filePath, scanner);
     }
 
-    private static class MyIterator implements Iterator<DataRowContext<String>> {
+    private static class MyIterator implements CloseableIterator<String> {
 
+        private final String filePath;
         private final Scanner scanner;
-        private final DataRowJudge<String> dataRowJudge;
 
-        private RowType previousRowType;
-        private int rowNumber = 0;
         private boolean scannerClosed = false;
 
-        private MyIterator(final Scanner scanner, final DataRowJudge<String> dataRowJudge) {
-            if (null == dataRowJudge) {
-                throw new IllegalArgumentException("dataRowJudge must not be null");
-            }
-
+        private MyIterator(final String filePath, final Scanner scanner) {
+            this.filePath = filePath;
             this.scanner = scanner;
-            this.dataRowJudge = dataRowJudge;
+            logger.finer(filePath + " opened");
         }
 
         @Override
@@ -78,8 +60,7 @@ public class DefaultPlainTextDataFileReader implements PlainTextDataFileReader {
             }
 
             if (!this.scanner.hasNextLine()) {
-                this.scanner.close();
-                this.scannerClosed = true;
+                this.close();
                 return false;
             } else {
                 return true;
@@ -87,20 +68,23 @@ public class DefaultPlainTextDataFileReader implements PlainTextDataFileReader {
         }
 
         @Override
-        public DataRowContext<String> next() {
+        public String next() {
             if (this.scannerClosed) {
                 throw new NoSuchElementException();
             }
-            final String row = this.scanner.nextLine();
-            this.rowNumber += 1;
-            final RowType currentRowType = this.dataRowJudge.test(this.rowNumber, row, this.previousRowType);
-            this.previousRowType = currentRowType;
-            return new DataRowContext<>(this.rowNumber, row, currentRowType);
+            return this.scanner.nextLine();
         }
 
         @Override
         public void remove() {
             throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void close() {
+            this.scanner.close();
+            this.scannerClosed = true;
+            logger.finer("Scanner for " + this.filePath + " closed");
         }
     }
 }

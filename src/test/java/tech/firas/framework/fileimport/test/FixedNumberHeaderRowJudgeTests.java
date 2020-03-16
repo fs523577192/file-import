@@ -24,7 +24,7 @@ import tech.firas.framework.fileimport.DataRowJudge;
 import tech.firas.framework.fileimport.FixedNumberHeaderRowJudge;
 import tech.firas.framework.fileimport.RowType;
 
-public class FixedNumberHeaderRowJudgeTests {
+public class FixedNumberHeaderRowJudgeTests extends AbstractTests {
 
     private static final Random random = new Random();
 
