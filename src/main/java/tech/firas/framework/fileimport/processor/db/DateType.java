@@ -29,18 +29,18 @@ public final class DateType extends DbDataType<Date> {
     }
 
     @Override
-    public Date fromString(final String source) throws ValidationException {
-        if (null == source) {
+    public Date fromString(final String column) throws ValidationException {
+        if (null == column || column.trim().isEmpty()) {
             if (isNotNull()) {
                 throw new ValidationException("date.invalid.notnull");
             }
             return null;
         }
         try {
-            final java.util.Date utilDate = new SimpleDateFormat(this.format).parse(source);
+            final java.util.Date utilDate = new SimpleDateFormat(this.format).parse(column);
             return new Date(utilDate.getTime());
         } catch (ParseException ex) {
-            throw new ValidationException("date.invalid.format: " + source, ex);
+            throw new ValidationException("date.invalid.format: " + column, ex);
         }
     }
 

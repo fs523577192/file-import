@@ -27,7 +27,7 @@ public final class Int16Type extends DbDataType<Short> {
 
     @Override
     public Short fromString(final String column) throws ValidationException {
-        if (null == column) {
+        if (null == column || column.trim().isEmpty()) {
             if (isNotNull()) {
                 throw new ValidationException("int16.invalid.notnull");
             }

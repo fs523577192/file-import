@@ -97,7 +97,7 @@ public class StringListToDbProcessorWithDataSource extends AbstractStringListToD
     }
 
     @Override
-    protected void insertOneRowIntoBatch(final String filePath,
+    protected void insertOneRowIntoBatch(final String filePath, final int rowNumber,
             final List<String> rowData) throws Exception {
         final PreparedStatement ps = this.statementCache.get(filePath);
         if (null == ps) {
@@ -110,11 +110,12 @@ public class StringListToDbProcessorWithDataSource extends AbstractStringListToD
         int i = 1;
         for (final DbDataType<?> item : typeList) {
             if (!iterator.hasNext()) {
-                logger.info("The size of the " + i +
-                        " row > the size of columnDataTypeList " + typeList.size());
-                break;
+                logger.info("The size of the " + rowNumber +
+                        " row < the size of columnDataTypeList " + typeList.size());
+                setParameter(ps, i, item, null);
+            } else {
+                setParameter(ps, i, item, iterator.next());
             }
-            setParameter(ps, i, item, iterator.next());
             i += 1;
         }
         ps.addBatch();

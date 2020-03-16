@@ -27,7 +27,7 @@ public final class Int64Type extends DbDataType<Long> {
 
     @Override
     public Long fromString(final String column) throws ValidationException {
-        if (null == column) {
+        if (null == column || column.trim().isEmpty()) {
             if (isNotNull()) {
                 throw new ValidationException("int64.invalid.notnull");
             }

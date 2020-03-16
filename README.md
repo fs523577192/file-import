@@ -11,7 +11,7 @@ The dependency is of scope "provided", so you have to provide spring-core at run
 # How to build
 There are 4 profiles in pom.xml corresponding to various version of `spring-core`:
 * 3.2.2
-* 3.2.2
+* 3.2.9
 * 5.0.9 (corresponding to Spring Boot 2.0.5)
 * 5.2.0 (corresponding to Spring Boot 2.2.0)
 

@@ -60,8 +60,8 @@ public final class DecimalType extends DbDataType<BigDecimal> {
     }
 
     @Override
-    public BigDecimal fromString(final String source) throws ValidationException {
-        if (null == source) {
+    public BigDecimal fromString(final String column) throws ValidationException {
+        if (null == column || column.trim().isEmpty()) {
             if (isNotNull()) {
                 throw new ValidationException("decimal.invalid.notnull");
             }
@@ -71,7 +71,7 @@ public final class DecimalType extends DbDataType<BigDecimal> {
             final DecimalFormat formatter = null == this.format ? new DecimalFormat() :
                     new DecimalFormat(this.format);
             formatter.setParseBigDecimal(true);
-            final Number temp = formatter.parse(source);
+            final Number temp = formatter.parse(column);
 
             if (temp instanceof Double) {
                 if (Double.isNaN(temp.doubleValue())) {
@@ -90,7 +90,7 @@ public final class DecimalType extends DbDataType<BigDecimal> {
             }
             return result;
         } catch (ParseException ex) {
-            throw new ValidationException("decimal.invalid.format: " + source, ex);
+            throw new ValidationException("decimal.invalid.format: " + column, ex);
         }
     }
 

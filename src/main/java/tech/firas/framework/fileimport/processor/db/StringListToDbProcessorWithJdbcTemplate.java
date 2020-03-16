@@ -50,7 +50,7 @@ public class StringListToDbProcessorWithJdbcTemplate extends AbstractStringListT
     }
 
     @Override
-    protected void insertOneRowIntoBatch(final String filePath,
+    protected void insertOneRowIntoBatch(final String filePath, final int rowNumber,
             final List<String> rowData) throws Exception {
         List<Object[]> params = this.rowParamCache.get(filePath);
         if (null == params) {
@@ -65,11 +65,13 @@ public class StringListToDbProcessorWithJdbcTemplate extends AbstractStringListT
         int i = 0;
         for (final DbDataType<?> item : typeList) {
             if (!iterator.hasNext()) {
-                logger.info("The size of the " + (i + 1) +
-                        " row > the size of columnDataTypeList " + typeList.size());
-                break;
+                logger.info('[' + filePath + "] The size of the " + rowNumber +
+                        " row < the size of columnDataTypeList " + typeList.size());
+                param[i] = item.fromString(null);
+            } else {
+                param[i] = item.fromString(iterator.next());
             }
-            param[i++] = item.fromString(iterator.next());
+            i += 1;
         }
         params.add(param);
     }

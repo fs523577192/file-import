@@ -29,18 +29,18 @@ public final class DateTimeType extends DbDataType<Timestamp> {
     }
 
     @Override
-    public Timestamp fromString(final String source) throws ValidationException {
-        if (null == source) {
+    public Timestamp fromString(final String column) throws ValidationException {
+        if (null == column || column.trim().isEmpty()) {
             if (isNotNull()) {
                 throw new ValidationException("datetime.invalid.notnull");
             }
             return null;
         }
         try {
-            final java.util.Date utilDate = new SimpleDateFormat(this.format).parse(source);
+            final java.util.Date utilDate = new SimpleDateFormat(this.format).parse(column);
             return new Timestamp(utilDate.getTime());
         } catch (ParseException ex) {
-            throw new ValidationException("datetime.invalid.format: " + source, ex);
+            throw new ValidationException("datetime.invalid.format: " + column, ex);
         }
     }
 

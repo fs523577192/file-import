@@ -36,7 +36,7 @@ public final class Float64Type extends DbDataType<Double> {
 
     @Override
     public Double fromString(final String column) throws ValidationException {
-        if (null == column) {
+        if (null == column || column.trim().isEmpty()) {
             if (isNotNull()) {
                 throw new ValidationException("float64.invalid.notnull");
             }

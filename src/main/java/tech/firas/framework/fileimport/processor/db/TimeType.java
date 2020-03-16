@@ -29,18 +29,18 @@ public final class TimeType extends DbDataType<Time> {
     }
 
     @Override
-    public Time fromString(final String source) throws ValidationException {
-        if (null == source) {
+    public Time fromString(final String column) throws ValidationException {
+        if (null == column || column.trim().isEmpty()) {
             if (isNotNull()) {
                 throw new ValidationException("time.invalid.notnull");
             }
             return null;
         }
         try {
-            final java.util.Date utilDate = new SimpleDateFormat(this.format).parse(source);
+            final java.util.Date utilDate = new SimpleDateFormat(this.format).parse(column);
             return new Time(utilDate.getTime());
         } catch (ParseException ex) {
-            throw new ValidationException("time.invalid.format: " + source, ex);
+            throw new ValidationException("time.invalid.format: " + column, ex);
         }
     }
 

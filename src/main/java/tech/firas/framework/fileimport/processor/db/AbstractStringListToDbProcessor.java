@@ -45,7 +45,7 @@ public abstract class AbstractStringListToDbProcessor implements DataFileProcess
 
             int rowNumber = this.rowCountCache.get(filePath);
 
-            this.insertOneRowIntoBatch(filePath, row);
+            this.insertOneRowIntoBatch(filePath, rowNumber, row);
 
             rowNumber += 1;
             this.rowCountCache.put(filePath, rowNumber);
@@ -74,7 +74,7 @@ public abstract class AbstractStringListToDbProcessor implements DataFileProcess
         }
     }
 
-    protected abstract void insertOneRowIntoBatch(String filePath, List<String> rowData) throws Exception;
+    protected abstract void insertOneRowIntoBatch(String filePath, int rowNumber, List<String> rowData) throws Exception;
     protected abstract void insertBatch(String filePath) throws Exception;
     protected abstract void cleanResource(String filePath);
 

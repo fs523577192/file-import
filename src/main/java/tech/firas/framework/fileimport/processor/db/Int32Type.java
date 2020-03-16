@@ -27,7 +27,7 @@ public class Int32Type extends DbDataType<Integer> {
 
     @Override
     public Integer fromString(final String column) throws ValidationException {
-        if (null == column) {
+        if (null == column || column.trim().isEmpty()) {
             if (isNotNull()) {
                 throw new ValidationException("int32.invalid.notnull");
             }
