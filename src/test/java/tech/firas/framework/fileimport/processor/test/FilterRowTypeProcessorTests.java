@@ -39,15 +39,12 @@ public class FilterRowTypeProcessorTests extends AbstractTests {
         for (int i = 0; i < 1000; i += 1) {
             final int n = random.nextInt(10);
 
-            final FixedNumberHeaderRowJudge<String> judge = new FixedNumberHeaderRowJudge<>();
-            judge.setNumberOfHeaderRows(n);
-
             final FilterRowTypeProcessor<String> filterRowTypeProcessor = new FilterRowTypeProcessor<>();
             filterRowTypeProcessor.setAllowRowTypes(Collections.singletonList(RowType.DATA));
             filterRowTypeProcessor.setNextProcessor(new TestProcessor(n));
 
             final SetRowTypeProcessor<String> setRowTypeProcessor = new SetRowTypeProcessor<>();
-            setRowTypeProcessor.setDataRowJudge(judge);
+            setRowTypeProcessor.setDataRowJudge(new FixedNumberHeaderRowJudge<String>(n));
             setRowTypeProcessor.setNextProcessor(filterRowTypeProcessor);
 
             final DataFileContext context = new DataFileContext("test" + i);

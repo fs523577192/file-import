@@ -32,9 +32,12 @@ public class FixedNumberHeaderRowJudgeTests extends AbstractTests {
     public void test() {
         for (int i = 0; i < 1000; i += 1) {
             final int n = random.nextInt(10);
+
             final FixedNumberHeaderRowJudge<String> judge = new FixedNumberHeaderRowJudge<>();
             judge.setNumberOfHeaderRows(n);
             testAssertion(judge, n);
+
+            testAssertion(new FixedNumberHeaderRowJudge<String>(n), n);
         }
     }
 

@@ -23,11 +23,22 @@ public class FixedNumberHeaderRowJudge<T> implements DataRowJudge<T> {
 
     private int numberOfHeaderRows;
 
+    public FixedNumberHeaderRowJudge(final int numberOfHeaderRows) {
+        setNumberOfHeaderRows(numberOfHeaderRows);
+    }
+
+    public FixedNumberHeaderRowJudge() {
+        this(0);
+    }
+
     public int getNumberOfHeaderRows() {
         return numberOfHeaderRows;
     }
 
-    public void setNumberOfHeaderRows(int numberOfHeaderRows) {
+    public void setNumberOfHeaderRows(final int numberOfHeaderRows) {
+        if (numberOfHeaderRows < 0) {
+            throw new IllegalArgumentException("numberOfHeaderRows cannot be negative: " + numberOfHeaderRows);
+        }
         this.numberOfHeaderRows = numberOfHeaderRows;
     }
 

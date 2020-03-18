@@ -39,11 +39,8 @@ public class SetRowTypeProcessorTests extends AbstractTests {
         for (int i = 0; i < 1000; i += 1) {
             final int n = random.nextInt(10);
 
-            final FixedNumberHeaderRowJudge<String> judge = new FixedNumberHeaderRowJudge<>();
-            judge.setNumberOfHeaderRows(n);
-
             final SetRowTypeProcessor<String> processor = new SetRowTypeProcessor<>();
-            processor.setDataRowJudge(judge);
+            processor.setDataRowJudge(new FixedNumberHeaderRowJudge<String>(n));
             processor.setNextProcessor(new TestProcessor(n));
 
             final DataFileContext context = new DataFileContext("test" + i);
