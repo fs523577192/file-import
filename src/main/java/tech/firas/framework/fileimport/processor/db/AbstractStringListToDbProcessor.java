@@ -25,6 +25,19 @@ public abstract class AbstractStringListToDbProcessor implements DataFileProcess
      */
     private int batchSize = 100;
 
+    /**
+     * Whether this processor allow the number of the columns in one row
+     * is less than the size of {@code columnDataTypeList}.
+     *
+     * If allow, {@link #processRow(DataRowContext)} will set null for
+     * the remaining parameter of something like a {@code PreparedStatement}.
+     *
+     * If not allow, {@link #processRow(DataRowContext)} will throw
+     * {@code IllegalArgumentException} if the number of columns in a
+     * row is less.
+     */
+    private boolean allowLessColumns = true;
+
     private List<DbDataType<?>> columnDataTypeList;
 
     @Override
@@ -101,8 +114,8 @@ public abstract class AbstractStringListToDbProcessor implements DataFileProcess
             throw new IllegalArgumentException("row is empty");
         }
 
-        if (row.size() > typeList.size()) {
-            throw new IllegalArgumentException("The size of row " + row.size() + " > " +
+        if (!this.allowLessColumns && row.size() < typeList.size()) {
+            throw new IllegalArgumentException("The size of row " + row.size() + " < " +
                     " the size of columnDataTypeList " + typeList.size());
         }
     }
@@ -124,6 +137,14 @@ public abstract class AbstractStringListToDbProcessor implements DataFileProcess
             throw new IllegalArgumentException("batchSize must be a positive integer");
         }
         this.batchSize = batchSize;
+    }
+
+    public boolean isAllowLessColumns() {
+        return allowLessColumns;
+    }
+
+    public void setAllowLessColumns(final boolean allowLessColumns) {
+        this.allowLessColumns = allowLessColumns;
     }
 
     public List<DbDataType<?>> getColumnDataTypeList() {
