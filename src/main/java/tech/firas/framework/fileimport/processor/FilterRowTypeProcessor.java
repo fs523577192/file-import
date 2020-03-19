@@ -21,6 +21,10 @@ public class FilterRowTypeProcessor<R> extends AbstractChainedFileProcessor<R, R
         return allowRowTypes;
     }
 
+    public void setAllowRowTypes(final Set<RowType> allowRowTypes) {
+        this.allowRowTypes = allowRowTypes;
+    }
+
     /**
      * Set the RowTypes that can pass to the next DataFileProcessor.
      *
@@ -30,7 +34,7 @@ public class FilterRowTypeProcessor<R> extends AbstractChainedFileProcessor<R, R
      */
     public void setAllowRowTypes(final Iterable<RowType> allowRowTypes) {
         if (null == allowRowTypes || allowRowTypes instanceof Set) {
-            this.allowRowTypes = (Set<RowType>) allowRowTypes;
+            this.setAllowRowTypes((Set<RowType>) allowRowTypes);
         } else {
             this.allowRowTypes = new HashSet<>(4, 1f);
             for (final RowType rowType : allowRowTypes) {
