@@ -81,8 +81,10 @@ public class StringListToDbProcessorWithJdbcTemplate extends AbstractStringListT
         if (null == this.jdbcTemplate) {
             throw new IllegalStateException("jdbcTemplate is null");
         }
-        this.jdbcTemplate.batchUpdate(this.getInsertSql(), this.rowParamCache.get(filePath),
-                this.sqlTypeCache.get(filePath));
+
+        final List<Object[]> params = this.rowParamCache.get(filePath);
+        this.jdbcTemplate.batchUpdate(this.getInsertSql(), params, this.sqlTypeCache.get(filePath));
+        params.clear();
     }
 
     @Override
