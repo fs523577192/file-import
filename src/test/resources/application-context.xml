@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans.xsd">
+           http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <!-- DB data source, BEGIN -->
     <bean id="testDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.h2.Driver"/>
-        <property name="url" value="jdbc:h2:mem:test"/>
+        <property name="url" value="jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"/>
         <property name="username" value="sa"/>
         <property name="password" value=""/>
     </bean>
@@ -17,54 +17,104 @@
     </bean>
     <!-- DB data source, END -->
 
+    <bean id="oneHeaderJudge" class="tech.firas.framework.fileimport.FixedNumberHeaderRowJudge">
+        <property name="numberOfHeaderRows" value="1"/>
+    </bean>
+
+    <util:set id="allowRowTypeSet" set-class="java.util.HashSet">
+        <util:constant static-field="tech.firas.framework.fileimport.RowType.DATA"/>
+    </util:set>
+
     <bean id="csvParser" class="com.opencsv.RFC4180Parser"/>
 
-    <bean id="columnDataTypeList" class="java.util.ArrayList">
-        <constructor-arg name="c">
-            <list>
-                <bean class="tech.firas.framework.fileimport.processor.db.VarCharType">
-                    <constructor-arg name="notNull" value="true"/>
-                    <constructor-arg name="length" value="5"/>
-                </bean>
-                <bean class="tech.firas.framework.fileimport.processor.db.VarCharType">
-                    <constructor-arg name="notNull" value="false"/>
-                    <constructor-arg name="length" value="100"/>
-                </bean>
-                <bean class="tech.firas.framework.fileimport.processor.db.VarCharType">
-                    <constructor-arg name="notNull" value="true"/>
-                    <constructor-arg name="length" value="5"/>
-                </bean>
-                <bean class="tech.firas.framework.fileimport.processor.db.Int32Type">
-                    <constructor-arg name="notNull" value="true"/>
-                </bean>
-                <bean class="tech.firas.framework.fileimport.processor.db.Int32Type"/>
-            </list>
-        </constructor-arg>
+    <util:list id="columnDataTypeList" list-class="java.util.ArrayList">
+        <bean class="tech.firas.framework.fileimport.processor.db.VarCharType">
+            <constructor-arg name="notNull" value="true"/>
+            <constructor-arg name="length" value="5"/>
+        </bean>
+        <bean class="tech.firas.framework.fileimport.processor.db.VarCharType">
+            <constructor-arg name="notNull" value="false"/>
+            <constructor-arg name="length" value="100"/>
+        </bean>
+        <bean class="tech.firas.framework.fileimport.processor.db.VarCharType">
+            <constructor-arg name="notNull" value="true"/>
+            <constructor-arg name="length" value="5"/>
+        </bean>
+        <bean class="tech.firas.framework.fileimport.processor.db.Int32Type">
+            <constructor-arg name="notNull" value="true"/>
+        </bean>
+        <bean class="tech.firas.framework.fileimport.processor.db.Int32Type"/>
+        <bean class="tech.firas.framework.fileimport.processor.db.DecimalType">
+            <constructor-arg name="notNull" value="true"/>
+            <constructor-arg name="precision" value="11"/>
+            <constructor-arg name="scale" value="3"/>
+            <constructor-arg name="format" value="0.00"/>
+        </bean>
+        <bean class="tech.firas.framework.fileimport.processor.db.DecimalType">
+            <constructor-arg name="precision" value="10"/>
+            <constructor-arg name="scale" value="2"/>
+            <constructor-arg name="format" value="0.00"/>
+        </bean>
+        <bean class="tech.firas.framework.fileimport.processor.db.VarCharType">
+            <constructor-arg name="length" value="100"/>
+        </bean>
+        <bean class="tech.firas.framework.fileimport.processor.db.DateTimeType">
+            <constructor-arg name="format" value="yyyy-MM-dd HH:mm:ss"/>
+        </bean>
+    </util:list>
+
+    <bean id="toDbProcessorWithDataSource"
+          class="tech.firas.framework.fileimport.processor.db.StringListToDbProcessorWithDataSource">
+        <property name="insertSql" value="INSERT INTO t_test(aa,bb,cc,dd,ee,ff,gg,hh,ii)VALUES(?,?,?,?,?,?,?,?,?)"/>
+        <property name="batchSize" value="8"/>
+        <property name="columnDataTypeList" ref="columnDataTypeList"/>
+        <property name="dataSource" ref="testDataSource"/>
+    </bean>
+    <bean id="toDbProcessorWithJdbcTemplate"
+          class="tech.firas.framework.fileimport.processor.db.StringListToDbProcessorWithJdbcTemplate">
+        <property name="insertSql" value="INSERT INTO t_test(aa,bb,cc,dd,ee,ff,gg,hh,ii)VALUES(?,?,?,?,?,?,?,?,?)"/>
+        <property name="batchSize" value="8"/>
+        <property name="columnDataTypeList" ref="columnDataTypeList"/>
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
 
     <bean class="tech.firas.framework.fileimport.processor.CsvRowToStringListProcessor"
-          id="csvRowToStringListProcessor1">
+          id="csvRowToStringListProcessorWithDataSource">
         <property name="csvParser" ref="csvParser"/>
-        <property name="nextProcessor">
-            <bean class="tech.firas.framework.fileimport.processor.db.StringListToDbProcessorWithJdbcTemplate">
-                <property name="insertSql" value="INSERT INTO t_test()VALUE()"/>
-                <property name="batchSize" value="2"/>
-                <property name="columnDataTypeList" ref="columnDataTypeList"/>
-                <property name="jdbcTemplate" ref="jdbcTemplate"/>
-            </bean>
-        </property>
+        <property name="nextProcessor" ref="toDbProcessorWithDataSource"/>
     </bean>
     <bean class="tech.firas.framework.fileimport.processor.CsvRowToStringListProcessor"
-          id="csvRowToStringListProcessor2">
+          id="csvRowToStringListProcessorWithJdbcTemplate">
         <property name="csvParser" ref="csvParser"/>
-        <property name="nextProcessor">
-            <bean class="tech.firas.framework.fileimport.processor.db.StringListToDbProcessorWithDataSource">
-                <property name="insertSql" value="INSERT INTO t_test()VALUE()"/>
-                <property name="batchSize" value="2"/>
-                <property name="columnDataTypeList" ref="columnDataTypeList"/>
-                <property name="dataSource" ref="testDataSource"/>
+        <property name="nextProcessor" ref="toDbProcessorWithJdbcTemplate"/>
+    </bean>
+
+    <bean class="tech.firas.framework.fileimport.DefaultPlainTextDataFileReader"
+          id="plainTextDataFileReaderWithDataSource">
+        <property name="dataFileProcessor">
+            <bean class="tech.firas.framework.fileimport.processor.SetRowTypeProcessor">
+                <property name="dataRowJudge" ref="oneHeaderJudge"/>
+                <property name="nextProcessor">
+                    <bean class="tech.firas.framework.fileimport.processor.FilterRowTypeProcessor">
+                        <property name="allowRowTypes" ref="allowRowTypeSet"/>
+                        <property name="nextProcessor" ref="csvRowToStringListProcessorWithDataSource"/>
+                    </bean>
+                </property>
             </bean>
         </property>
     </bean>
-
+    <bean class="tech.firas.framework.fileimport.DefaultPlainTextDataFileReader"
+          id="plainTextDataFileReaderWithJdbcTemplate">
+        <property name="dataFileProcessor">
+            <bean class="tech.firas.framework.fileimport.processor.SetRowTypeProcessor">
+                <property name="dataRowJudge" ref="oneHeaderJudge"/>
+                <property name="nextProcessor">
+                    <bean class="tech.firas.framework.fileimport.processor.FilterRowTypeProcessor">
+                        <property name="allowRowTypes" ref="allowRowTypeSet"/>
+                        <property name="nextProcessor" ref="csvRowToStringListProcessorWithJdbcTemplate"/>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
 </beans>

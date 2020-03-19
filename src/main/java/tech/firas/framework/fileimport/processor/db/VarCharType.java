@@ -25,6 +25,14 @@ public final class VarCharType extends DbDataType<String> {
         this.length = length;
     }
 
+    /**
+     * Creates a VarCharType that allow null
+     * @param length  the length of the String that can be stored
+     */
+    public VarCharType(final int length) {
+        this(false, length);
+    }
+
     public int getLength() {
         return this.length;
     }
