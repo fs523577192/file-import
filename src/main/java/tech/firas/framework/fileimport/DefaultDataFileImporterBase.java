@@ -26,23 +26,17 @@ import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import org.springframework.core.convert.converter.Converter;
-
 /**
+ * Reads and processes a set of data files that are in the same directory and should be processed
+ * by the same DataFileReader and the same DataFileProcessors
  *
  * @param <R>  the type of a row (String for a plain text data file, or Row for an Excel file, ...)
- * @param <T>  the type of the Java object that every data row is to be converted to
  */
-public abstract class DefaultDataFileImporterBase<R, T> implements Callable<ImportContext> {
+public class DefaultDataFileImporterBase<R> implements Callable<ImportContext> {
 
     private static final Logger logger = Logger.getLogger(DefaultDataFileImporterBase.class.getName());
 
     private AbstractDataFileReader<R> dataFileReader;
-
-    /**
-     * The converter used to convert the data row into a Java object
-     */
-    private Converter<R, T> rowToJavaObjectConverter;
 
     /**
      * The path of the directory in which this class searches for the files to import
@@ -104,17 +98,6 @@ public abstract class DefaultDataFileImporterBase<R, T> implements Callable<Impo
 
     public void setDataFileReader(final AbstractDataFileReader<R> dataFileReader) {
         this.dataFileReader = dataFileReader;
-    }
-
-    public Converter<R, T> getRowToJavaObjectConverter() {
-        return this.rowToJavaObjectConverter;
-    }
-
-    public void setRowToJavaObjectConverter(final Converter<R, T> converter) {
-        if (null == converter) {
-            throw new IllegalArgumentException("rowToJavaObjectConverter must not be null");
-        }
-        this.rowToJavaObjectConverter = converter;
     }
 
     public String getBaseDirectory() {
