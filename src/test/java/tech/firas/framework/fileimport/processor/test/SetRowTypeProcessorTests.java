@@ -22,10 +22,8 @@ import org.junit.Test;
 
 import tech.firas.framework.fileimport.DataFileContext;
 import tech.firas.framework.fileimport.DataRowContext;
-import tech.firas.framework.fileimport.DataRowJudge;
 import tech.firas.framework.fileimport.FixedNumberHeaderRowJudge;
 import tech.firas.framework.fileimport.RowType;
-import tech.firas.framework.fileimport.processor.AbstractChainedFileProcessor;
 import tech.firas.framework.fileimport.processor.DataFileProcessor;
 import tech.firas.framework.fileimport.processor.SetRowTypeProcessor;
 import tech.firas.framework.fileimport.test.AbstractTests;

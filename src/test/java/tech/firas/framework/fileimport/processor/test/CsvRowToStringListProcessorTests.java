@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package tech.firas.framework.fileimport.processor.test;
 
 import java.util.List;
@@ -78,7 +93,7 @@ public class CsvRowToStringListProcessorTests extends AbstractTests {
                 case 2:
                     Assert.assertEquals(RowType.DATA, row.getType());
                     final List<String> a1 = row.getRow();
-                    assertFirstTwoRows(a1);
+                    assertFirst2Rows(a1);
                     row.getDataFileContext().setAttachment(a1);
                     break;
                 case 3:
@@ -87,7 +102,7 @@ public class CsvRowToStringListProcessorTests extends AbstractTests {
 
                     Assert.assertEquals(RowType.DATA, row.getType());
                     final List<String> a2 = row.getRow();
-                    assertFirstTwoRows(a2);
+                    assertFirst2Rows(a2);
                     break;
                 case 4:
                     Assert.assertEquals(RowType.DATA, row.getType());
@@ -100,6 +115,7 @@ public class CsvRowToStringListProcessorTests extends AbstractTests {
                     Assert.assertEquals("0.001", a3.get(5));
                     Assert.assertEquals("", a3.get(6));
                     Assert.assertEquals("cdeCDE 098!@#$%^&*()-=_+[]\\{}|;':\"<>?./", a3.get(7));
+                    Assert.assertEquals("2000-02-29 23:59:59", a3.get(8));
                     break;
                 case 5:
                     Assert.assertEquals(RowType.DATA, row.getType());
@@ -120,8 +136,9 @@ public class CsvRowToStringListProcessorTests extends AbstractTests {
             return row;
         }
 
-        private void assertFirstTwoRows(final List<String> row) {
+        private void assertFirst2Rows(final List<String> row) {
             Assert.assertNotNull(row);
+            Assert.assertTrue(row.size() >= 9);
             Assert.assertEquals("true", row.get(0));
             Assert.assertEquals("true", row.get(2));
             Assert.assertEquals(Integer.toString(Integer.MIN_VALUE), row.get(3));
@@ -129,6 +146,7 @@ public class CsvRowToStringListProcessorTests extends AbstractTests {
             Assert.assertEquals("12345678.09", row.get(5));
             Assert.assertEquals("-12345678.09", row.get(6));
             Assert.assertEquals("cdeCDE 123!@#$%^&*()-=_+[]\\{}|;':\"<>?./", row.get(7));
+            Assert.assertEquals("1970-01-01 00:00:00", row.get(8));
         }
     }
 
@@ -145,7 +163,7 @@ public class CsvRowToStringListProcessorTests extends AbstractTests {
                 case 6:
                     Assert.assertEquals(RowType.DATA, row.getType());
                     final List<String> a1 = row.getRow();
-                    assert6Or7Rows(a1);
+                    assert6thOr7thRows(a1);
                     row.getDataFileContext().setAttachment(a1);
                     break;
                 case 7:
@@ -154,7 +172,7 @@ public class CsvRowToStringListProcessorTests extends AbstractTests {
 
                     Assert.assertEquals(RowType.DATA, row.getType());
                     final List<String> a2 = row.getRow();
-                    assert6Or7Rows(a2);
+                    assert6thOr7thRows(a2);
                     break;
                 case 8:
                     Assert.assertEquals(RowType.DATA, row.getType());
@@ -167,6 +185,7 @@ public class CsvRowToStringListProcessorTests extends AbstractTests {
                     Assert.assertEquals("0.001", a3.get(5));
                     Assert.assertEquals("", a3.get(6));
                     Assert.assertEquals("cdeCDE 098!@#$%^&*()-=_+[]\\{}|;':\"<>?,./", a3.get(7));
+                    Assert.assertEquals("1999-12-31 23:59:59", a3.get(8));
                     break;
                 case 9:
                     Assert.assertEquals(RowType.DATA, row.getType());
@@ -185,8 +204,9 @@ public class CsvRowToStringListProcessorTests extends AbstractTests {
             return row;
         }
 
-        private void assert6Or7Rows(final List<String> row) {
+        private void assert6thOr7thRows(final List<String> row) {
             Assert.assertNotNull(row);
+            Assert.assertTrue(row.size() >= 9);
             Assert.assertEquals("true", row.get(0));
             Assert.assertEquals("true", row.get(2));
             Assert.assertEquals(Integer.toString(Integer.MIN_VALUE), row.get(3));
@@ -194,6 +214,7 @@ public class CsvRowToStringListProcessorTests extends AbstractTests {
             Assert.assertEquals("12345678.09", row.get(5));
             Assert.assertEquals("-12345678.09", row.get(6));
             Assert.assertEquals("cdeCDE 123!@#$%^&*()-=_+[]\\{}|;':\"<>?,./", row.get(7));
+            Assert.assertEquals("2020-02-29 12:30:30", row.get(8));
         }
     }
 }
