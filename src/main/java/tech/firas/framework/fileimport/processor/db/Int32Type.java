@@ -29,7 +29,7 @@ public class Int32Type extends DbDataType<Integer> {
     public Integer fromString(final String column) throws ValidationException {
         if (null == column || column.trim().isEmpty()) {
             if (isNotNull()) {
-                throw new ValidationException("int32.invalid.notnull");
+                throw new ValidationException("int32.invalid.notNull");
             }
             return null;
         }

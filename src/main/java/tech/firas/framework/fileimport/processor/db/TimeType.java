@@ -16,12 +16,25 @@ public final class TimeType extends DbDataType<Time> {
 
     private final String format;
 
+    /**
+     * Creates a TimeType
+     * @param notNull  whether a column can be null or empty
+     * @param format  the format to parse the column to a {@link Time}
+     */
     public TimeType(final boolean notNull, final String format) {
         super(notNull);
         if (null == format) {
             throw new IllegalArgumentException("format should NOT be null");
         }
         this.format = format;
+    }
+
+    /**
+     * Creates a TimeType that allow null
+     * @param format  the format to parse the column to a {@link Time}
+     */
+    public TimeType(final String format) {
+        this(false, format);
     }
 
     public String getFormat() {
@@ -32,7 +45,7 @@ public final class TimeType extends DbDataType<Time> {
     public Time fromString(final String column) throws ValidationException {
         if (null == column || column.trim().isEmpty()) {
             if (isNotNull()) {
-                throw new ValidationException("time.invalid.notnull");
+                throw new ValidationException("time.invalid.notNull");
             }
             return null;
         }

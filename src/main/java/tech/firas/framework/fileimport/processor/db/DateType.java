@@ -16,12 +16,25 @@ public final class DateType extends DbDataType<Date> {
 
     private final String format;
 
+    /**
+     * Creates a DateType
+     * @param notNull  whether a column can be null or empty
+     * @param format  the format to parse the column to a {@link Date}
+     */
     public DateType(final boolean notNull, final String format) {
         super(notNull);
         if (null == format) {
             throw new IllegalArgumentException("format should NOT be null");
         }
         this.format = format;
+    }
+
+    /**
+     * Creates a DateType that allow null
+     * @param format  the format to parse the column to a {@link Date}
+     */
+    public DateType(final String format) {
+        this(false, format);
     }
 
     public String getFormat() {
@@ -32,7 +45,7 @@ public final class DateType extends DbDataType<Date> {
     public Date fromString(final String column) throws ValidationException {
         if (null == column || column.trim().isEmpty()) {
             if (isNotNull()) {
-                throw new ValidationException("date.invalid.notnull");
+                throw new ValidationException("date.invalid.notNull");
             }
             return null;
         }

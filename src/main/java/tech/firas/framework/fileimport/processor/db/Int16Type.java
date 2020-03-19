@@ -29,7 +29,7 @@ public final class Int16Type extends DbDataType<Short> {
     public Short fromString(final String column) throws ValidationException {
         if (null == column || column.trim().isEmpty()) {
             if (isNotNull()) {
-                throw new ValidationException("int16.invalid.notnull");
+                throw new ValidationException("int16.invalid.notNull");
             }
             return null;
         }

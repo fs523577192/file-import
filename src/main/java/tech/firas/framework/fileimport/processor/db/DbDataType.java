@@ -34,5 +34,6 @@ abstract class DbDataType<T> {
         }
     }
 
-    public abstract void setParameterForPreparedStatement0(PreparedStatement ps, int index, T value) throws SQLException;
+    protected abstract void setParameterForPreparedStatement0(
+            PreparedStatement ps, int index, T value) throws SQLException;
 }

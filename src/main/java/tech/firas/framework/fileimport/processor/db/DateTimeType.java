@@ -16,12 +16,25 @@ public final class DateTimeType extends DbDataType<Timestamp> {
 
     private final String format;
 
+    /**
+     * Creates a DateTimeType
+     * @param notNull  whether a column can be null or empty
+     * @param format  the format to parse the column to a {@link Timestamp}
+     */
     public DateTimeType(final boolean notNull, final String format) {
         super(notNull);
         if (null == format) {
             throw new IllegalArgumentException("format should NOT be null");
         }
         this.format = format;
+    }
+
+    /**
+     * Creates a DateTimeType that allow null
+     * @param format  the format to parse the column to a {@link Timestamp}
+     */
+    public DateTimeType(final String format) {
+        this(false, format);
     }
 
     public String getFormat() {
@@ -32,7 +45,7 @@ public final class DateTimeType extends DbDataType<Timestamp> {
     public Timestamp fromString(final String column) throws ValidationException {
         if (null == column || column.trim().isEmpty()) {
             if (isNotNull()) {
-                throw new ValidationException("datetime.invalid.notnull");
+                throw new ValidationException("datetime.invalid.notNull");
             }
             return null;
         }

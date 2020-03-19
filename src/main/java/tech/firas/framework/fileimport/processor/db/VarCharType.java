@@ -33,7 +33,7 @@ public final class VarCharType extends DbDataType<String> {
     public String fromString(final String column) throws ValidationException {
         if (null == column) {
             if (isNotNull()) {
-                throw new ValidationException("varchar.invalid.notnull");
+                throw new ValidationException("varchar.invalid.notNull");
             }
             return null;
         }
