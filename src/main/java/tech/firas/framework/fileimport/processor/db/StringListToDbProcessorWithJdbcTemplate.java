@@ -20,8 +20,8 @@ public class StringListToDbProcessorWithJdbcTemplate extends AbstractStringListT
 
     private JdbcTemplate jdbcTemplate;
 
-    private Map<String, int[]> sqlTypeCache = new HashMap<>();
-    private Map<String, List<Object[]>> rowParamCache = new HashMap<>();
+    protected Map<String, int[]> sqlTypeCache = new HashMap<>();
+    protected Map<String, List<Object[]>> rowParamCache = new HashMap<>();
 
     @Override
     public void beforeProcessFile(final String filePath) throws Exception {

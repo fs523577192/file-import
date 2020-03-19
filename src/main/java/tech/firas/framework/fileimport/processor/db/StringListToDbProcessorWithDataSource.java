@@ -3,7 +3,6 @@ package tech.firas.framework.fileimport.processor.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +31,7 @@ public class StringListToDbProcessorWithDataSource extends AbstractStringListToD
 
     private DataSource dataSource;
 
-    private Map<String, PreparedStatement> statementCache = new HashMap<>();
+    protected Map<String, PreparedStatement> statementCache = new HashMap<>();
 
     @Override
     public void beforeProcessFile(final String filePath) throws Exception {
@@ -112,26 +111,13 @@ public class StringListToDbProcessorWithDataSource extends AbstractStringListToD
             if (!iterator.hasNext()) {
                 logger.info("The size of the " + rowNumber +
                         " row < the size of columnDataTypeList " + typeList.size());
-                setParameter(ps, i, item, null);
+                item.setParameterForPreparedStatement(ps, i, null);
             } else {
-                setParameter(ps, i, item, iterator.next());
+                item.setParameterForPreparedStatement(ps, i, iterator.next());
             }
             i += 1;
         }
         ps.addBatch();
-    }
-
-    private void setParameter(final PreparedStatement ps, final int index, final DbDataType<?> dataType,
-            final String column) throws SQLException, ValidationException {
-        if (dataType instanceof Int32Type) {
-        } else if (dataType instanceof Int64Type) {
-            Long value = ((Int64Type) dataType).fromString(column);
-            if (null == value) {
-                ps.setNull(index, dataType.getJavaSqlType());
-            } else {
-                ps.setLong(index, value);
-            }
-        }
     }
 
     @Override
