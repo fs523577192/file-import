@@ -116,7 +116,7 @@ public class DefaultDataFileImporterBase<R> implements Callable<ImportContext> {
         this.fileNamePattern = fileNamePattern;
     }
 
-    protected void beforeAllImport(final List<File> filesToImport) {
+    protected void beforeAllImport(final List<File> filesToImport) throws Exception {
         logger.finer("Going to import " + filesToImport.size() + " files in " + this.baseDirectory);
     }
 
@@ -124,7 +124,7 @@ public class DefaultDataFileImporterBase<R> implements Callable<ImportContext> {
         return this.dataFileReader.readDataFile(filePath, null);
     }
 
-    protected void afterAllImport(final Map<String, DataFileContext> dataFileContextMap) {
+    protected void afterAllImport(final Map<String, DataFileContext> dataFileContextMap) throws Exception {
         logger.finer(dataFileContextMap.size() + " files in " + this.baseDirectory + " are imported");
     }
 }
