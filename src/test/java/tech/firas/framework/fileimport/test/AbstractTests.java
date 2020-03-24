@@ -24,7 +24,7 @@ public abstract class AbstractTests {
     protected Logger logger;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         System.setProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager");
         this.logger = Logger.getLogger(this.getClass().getName());
     }
