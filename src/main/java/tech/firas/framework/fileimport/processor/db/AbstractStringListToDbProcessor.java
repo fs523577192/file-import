@@ -57,10 +57,10 @@ public abstract class AbstractStringListToDbProcessor implements DataFileProcess
             validateRow(typeList, row);
 
             int rowNumber = this.rowCountCache.get(filePath);
+            rowNumber += 1;
 
             this.insertOneRowIntoBatch(filePath, rowNumber, row);
 
-            rowNumber += 1;
             this.rowCountCache.put(filePath, rowNumber);
 
             if (rowNumber % this.batchSize == 0) {

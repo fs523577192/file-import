@@ -22,12 +22,16 @@ public class StringListToDbProcessorWithDataSource extends AbstractStringListToD
     private static final Logger logger = Logger.getLogger(StringListToDbProcessorWithDataSource.class.getName());
 
     /**
-     * whether commit for every batch insert,
-     * if false commit in afterProcessFile.
+     * Indicates whether this processor commits transaction for every batch insert.
+     *
+     * If the value is {@code false}, this processor only commits in afterProcessFile.
+     *
+     * If the value is {@code null}, this processor will not begin / commit / rollback
+     * the transaction in case that the transaction is managed by a container.
      *
      * The default value is {@code true}.
      */
-    private boolean autoCommit = true;
+    private Boolean autoCommit = true;
 
     private DataSource dataSource;
 
@@ -40,7 +44,10 @@ public class StringListToDbProcessorWithDataSource extends AbstractStringListToD
         validateProcessorParameters();
 
         final Connection connection = this.dataSource.getConnection();
-        connection.setAutoCommit(this.autoCommit);
+        final Boolean autoCommit = this.autoCommit;
+        if (null != autoCommit) {
+            connection.setAutoCommit(autoCommit);
+        }
         logger.finer("Connection created for " + filePath);
 
         try {
@@ -75,10 +82,13 @@ public class StringListToDbProcessorWithDataSource extends AbstractStringListToD
             logger.log(Level.SEVERE, "Fail to close PreparedStatement for " + filePath, ex);
         }
 
+        final Boolean autoCommit = this.autoCommit;
         try {
-            connection.commit();
+            if (null != autoCommit) {
+                connection.commit();
+            }
         } catch (SQLException ex) {
-            if (this.autoCommit) {
+            if (autoCommit) {
                 logger.log(Level.SEVERE, "Fail to finally commit transaction for " + filePath, ex);
             } else {
                 logger.severe("Fail to finally commit transaction for " + filePath);
@@ -166,11 +176,11 @@ public class StringListToDbProcessorWithDataSource extends AbstractStringListToD
         }
     }
 
-    public boolean isAutoCommit() {
+    public Boolean isAutoCommit() {
         return autoCommit;
     }
 
-    public void setAutoCommit(final boolean autoCommit) {
+    public void setAutoCommit(final Boolean autoCommit) {
         this.autoCommit = autoCommit;
     }
 
