@@ -17,17 +17,23 @@ import java.text.ParseException;
 public final class DecimalType extends DbDataType<BigDecimal> {
 
     private final int precision, scale;
+
+    private final RoundingMode roundingMode;
+
     private final String format;
 
     /**
      * Creates a DecimalType
-     * @param notNull    whether this column in DB cannot be null
-     * @param precision  how many decimal digits can be stored, should be a positive integer
-     * @param scale      how many decimal digits after the decimal point can be stored,
-     *                    should be a non-negative integer that not greater than `precision`
-     * @param format     for DecimalFormat to parse the String, null for a default DecimalFormat
+     * @param notNull       whether this column in DB cannot be null
+     * @param precision     how many decimal digits can be stored, should be a positive integer
+     * @param scale         how many decimal digits after the decimal point can be stored,
+     *                       should be a non-negative integer that not greater than {@link #precision}
+     * @param roundingMode  specifies how to round when a column's scale is greater than {@link #scale},
+     *                       if is null, the column's scale cannot be greater than {@link #scale}
+     * @param format        for DecimalFormat to parse the String, null for a default DecimalFormat
      */
-    public DecimalType(final boolean notNull, final int precision, final int scale, final String format) {
+    public DecimalType(final boolean notNull, final int precision, final int scale,
+            final RoundingMode roundingMode, final String format) {
         super(notNull);
         if (precision <= 0) {
             throw new IllegalArgumentException("precision should be a positive integer, " +
@@ -45,18 +51,25 @@ public final class DecimalType extends DbDataType<BigDecimal> {
         }
         this.scale = scale;
 
+        if (null == roundingMode) {
+            throw new IllegalArgumentException("roundingMode cannot be null");
+        }
+        this.roundingMode = roundingMode;
+
         this.format = format;
     }
 
     /**
      * Creates a DecimalType that allow null
-     * @param precision  how many decimal digits can be stored, should be a positive integer
-     * @param scale      how many decimal digits after the decimal point can be stored,
-     *                    should be a non-negative integer that not greater than `precision`
-     * @param format     for DecimalFormat to parse the String, null for a default DecimalFormat
+     * @param precision     how many decimal digits can be stored, should be a positive integer
+     * @param scale         how many decimal digits after the decimal point can be stored,
+     *                       should be a non-negative integer that not greater than `precision`
+     * @param roundingMode  specifies how to round when a column's scale is larger than {@link #scale},
+     *                       if is null, the column's scale cannot be greater than {@link #scale}
+     * @param format        for DecimalFormat to parse the String, null for a default DecimalFormat
      */
-    public DecimalType(final int precision, final int scale, final String format) {
-        this(false, precision, scale, format);
+    public DecimalType(final int precision, final int scale, final RoundingMode roundingMode, final String format) {
+        this(false, precision, scale, roundingMode, format);
     }
 
     public int getPrecision() {
@@ -94,11 +107,20 @@ public final class DecimalType extends DbDataType<BigDecimal> {
             }
 
             final BigDecimal bigDecimal = (BigDecimal) temp;
-            if (-bigDecimal.scale() > this.scale) {
-                throw new ValidationException("decimal.tooBig.scale: " + -bigDecimal.scale());
+            final BigDecimal result;
+            if (null == this.roundingMode) {
+                if (-bigDecimal.scale() > this.scale) {
+                    throw new ValidationException("decimal.tooBig.scale: " + -bigDecimal.scale());
+                }
+                result = bigDecimal;
+            } else {
+                try {
+                    result = bigDecimal.setScale(this.scale, this.roundingMode);
+                } catch (ArithmeticException ex) {
+                    throw new ValidationException("decimal.tooBig.scale: " + -bigDecimal.scale());
+                }
             }
 
-            final BigDecimal result = bigDecimal.setScale(this.scale, RoundingMode.UNNECESSARY);
             if (result.precision() > this.precision) {
                 throw new ValidationException("decimal.tooBig.precision: " + result.precision());
             }
