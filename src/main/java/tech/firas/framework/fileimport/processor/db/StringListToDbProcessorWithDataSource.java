@@ -120,7 +120,8 @@ public class StringListToDbProcessorWithDataSource extends AbstractStringListToD
         for (final DbDataType<?> item : typeList) {
             if (!iterator.hasNext()) {
                 logger.info("The size of the " + rowNumber +
-                        " row < the size of columnDataTypeList " + typeList.size());
+                        " row < the size of columnDataTypeList " + typeList.size() +
+                        ", filePath: " + filePath);
                 item.setParameterForPreparedStatement(ps, i, null);
             } else {
                 item.setParameterForPreparedStatement(ps, i, iterator.next());
@@ -176,7 +177,7 @@ public class StringListToDbProcessorWithDataSource extends AbstractStringListToD
         }
     }
 
-    public Boolean isAutoCommit() {
+    public Boolean getAutoCommit() {
         return autoCommit;
     }
 

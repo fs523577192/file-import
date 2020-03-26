@@ -41,7 +41,7 @@ public abstract class AbstractStringListToDbProcessor implements DataFileProcess
     private List<DbDataType<?>> columnDataTypeList;
 
     @Override
-    public void beforeProcessFile(String filePath) throws Exception {
+    public void beforeProcessFile(final String filePath) throws Exception {
         this.rowCountCache.put(filePath, 0);
         logger.finer("rowCountCache initialized for " + filePath);
     }
@@ -64,9 +64,9 @@ public abstract class AbstractStringListToDbProcessor implements DataFileProcess
             this.rowCountCache.put(filePath, rowNumber);
 
             if (rowNumber % this.batchSize == 0) {
-                logger.finer("insertBatch, rowNumber: " + rowNumber);
+                logger.finer("insertBatch, rowNumber: " + rowNumber + ", filePath: " + filePath);
                 this.insertBatch(filePath);
-                logger.finer("insertBatch done, rowNumber: " + rowNumber);
+                logger.finer("insertBatch done, rowNumber: " + rowNumber + ", filePath: " + filePath);
             }
 
             return dataRowContext;
@@ -77,13 +77,15 @@ public abstract class AbstractStringListToDbProcessor implements DataFileProcess
     }
 
     @Override
-    public void afterProcessFile(DataFileContext dataFileContext) throws Exception {
-        int rowNumber = this.rowCountCache.remove(dataFileContext.getFilePath());
-        logger.finer("rowCountCache clear for " + dataFileContext.getFilePath());
+    public void afterProcessFile(final DataFileContext dataFileContext) throws Exception {
+        final String filePath = dataFileContext.getFilePath();
+        final int rowNumber = this.rowCountCache.remove(filePath);
+        logger.finer("rowCountCache clear for " + filePath);
         if (rowNumber % this.batchSize != 0) {
-            logger.finer("The last batch has not been inserted, insertBatch, rowNumber: " + rowNumber);
-            this.insertBatch(dataFileContext.getFilePath());
-            logger.finer("insertBatch done, rowNumber: " + rowNumber);
+            logger.finer("The last batch has not been inserted, insertBatch, rowNumber: " + rowNumber +
+                    ", filePath: " + filePath);
+            this.insertBatch(filePath);
+            logger.finer("insertBatch done, rowNumber: " + rowNumber + ", filePath: " + filePath);
         }
     }
 

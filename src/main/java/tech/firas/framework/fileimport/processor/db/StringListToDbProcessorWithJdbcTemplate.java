@@ -66,7 +66,8 @@ public class StringListToDbProcessorWithJdbcTemplate extends AbstractStringListT
         for (final DbDataType<?> item : typeList) {
             if (!iterator.hasNext()) {
                 logger.info('[' + filePath + "] The size of the " + rowNumber +
-                        " row < the size of columnDataTypeList " + typeList.size());
+                        " row < the size of columnDataTypeList " + typeList.size() +
+                        ", filePath: " + filePath);
                 param[i] = item.fromString(null);
             } else {
                 param[i] = item.fromString(iterator.next());

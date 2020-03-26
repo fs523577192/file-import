@@ -23,12 +23,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
  * Reads and processes a set of data files that are in the same directory and should be processed
- * by the same DataFileReader and the same DataFileProcessors
+ * by the same DataFileReader and the same DataFileProcessors.
+ *
+ * This class is called "Default" instead of "Abstract" because other "DataFileImporter" will
+ * probably not inherit this class.
  *
  * @param <R>  the type of a row (String for a plain text data file, or Row for an Excel file, ...)
  */
@@ -86,6 +90,7 @@ public class DefaultDataFileImporterBase<R> implements Callable<ImportContext> {
             result.setMessageForSuccess(dataFileContextMap.size() + " file(s) imported");
             return result;
         } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Fail to import", ex);
             final ImportContext result = new ImportContext(null);
             result.setMessageForFailure(ex.getMessage());
             return result;
