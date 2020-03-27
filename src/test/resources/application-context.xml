@@ -48,12 +48,14 @@
             <constructor-arg name="notNull" value="true"/>
             <constructor-arg name="precision" value="11"/>
             <constructor-arg name="scale" value="3"/>
+            <constructor-arg name="roundingMode" value="UNNECESSARY"/>
             <constructor-arg name="format" value="0.00"/>
         </bean>
         <bean class="tech.firas.framework.fileimport.processor.db.DecimalType">
             <constructor-arg name="precision" value="10"/>
             <constructor-arg name="scale" value="2"/>
-            <constructor-arg name="format" value="0.00"/>
+            <constructor-arg name="roundingMode"><null/></constructor-arg>
+            <constructor-arg name="format"><null/></constructor-arg>
         </bean>
         <bean class="tech.firas.framework.fileimport.processor.db.VarCharType">
             <constructor-arg name="length" value="100"/>

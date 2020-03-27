@@ -51,9 +51,6 @@ public final class DecimalType extends DbDataType<BigDecimal> {
         }
         this.scale = scale;
 
-        if (null == roundingMode) {
-            throw new IllegalArgumentException("roundingMode cannot be null");
-        }
         this.roundingMode = roundingMode;
 
         this.format = format;
